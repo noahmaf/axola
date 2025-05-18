@@ -1,0 +1,34 @@
+src/
+├── features/
+│   ├── authentication/
+│   │   ├── components/
+│   │   │   ├── LoginForm.tsx
+│   │   │   ├── RegisterForm.tsx
+│   │   │   ├── ForgotPasswordForm.tsx
+│   │   ├── context/
+│   │   │   └── AuthContext.tsx
+│   │   ├── hooks/
+│   │   │   └── useAuth.ts
+│   │   ├── utils/
+│   │   │   ├── validateEmail.ts
+│   ├── todos/
+│   │   ├── components/
+│   │   │   └── TodoList.tsx
+│   │   ├── context/
+│   │   │   └── TodoContext.tsx
+│   │   ├── utils/
+│   ├── layouts/
+│   │   ├── MainLayout.tsx
+├── lib/
+│   ├── supabase.ts
+├── pages/
+│   ├── HomePage.tsx
+│   ├── LoginPage.tsx
+│   ├── TodoPage.tsx
+│   ├── ForgotPasswordPage.tsx
+│   └── ResetPasswordPage.tsx
+├── services/
+│   ├── authService.ts
+│   ├── todoService.ts
+├── App.tsx
+└── index.tsx

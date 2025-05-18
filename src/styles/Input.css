@@ -1,0 +1,35 @@
+.input {
+  @apply text-base p-2 bg-gray-200 rounded-lg placeholder:text-sm placeholder-slate-600 text-black focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary;
+}
+
+.new-announcement-input {
+  @apply text-base p-2 bg-gray-100 placeholder:text-sm placeholder-slate-600 text-black border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary;
+}
+
+.message-input {
+  @apply text-base p-2 bg-white placeholder:text-sm placeholder-slate-600 text-black border border-none rounded-lg focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary;
+}
+
+.search-input {
+  @apply font-normal text-base p-2 bg-gray-100 placeholder:text-sm placeholder-slate-600 text-black border border-none rounded-lg focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary;
+}
+
+.new-step-input {
+  @apply text-base p-2 bg-gray-100 placeholder:text-sm placeholder-slate-600 text-black border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary;
+}
+
+.select-input {
+  @apply text-base flex items-center justify-between p-2 bg-gray-100 data-[placeholder]:text-sm data-[placeholder]:text-slate-600 text-black border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary;
+}
+
+.input-error-message {
+  @apply text-red-400 mt-2;
+}
+
+.form-error-message {
+  @apply w-full text-center text-red-400 mt-4;
+}
+
+.default-label {
+  @apply block text-sm text-gray-500 mb-1;
+}

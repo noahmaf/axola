@@ -1,0 +1,11 @@
+.button {
+  @apply bg-secondary flex items-center space-x-3 justify-center text-white rounded-lg disabled:bg-opacity-70 min-w-[170px] text-sm font-medium h-[40px] border border-transparent font-[inherit] cursor-pointer enabled:transition-all enabled:duration-200 hover:border-white focus:outline-none focus:ring-0;
+}
+
+.outlined-button {
+  @apply bg-transparent flex items-center space-x-3 justify-center text-secondary rounded-lg disabled:bg-opacity-70 min-w-[170px] text-sm font-medium h-[40px] border border-transparent font-[inherit] cursor-pointer enabled:transition-all enabled:duration-200 hover:border-secondary border-secondary focus:outline-1 focus:ring-0 outline-1 outline-secondary;
+}
+
+.circle-button {
+  @apply bg-secondary text-white items-center justify-center rounded-full flex text-base font-medium w-[48px] h-[48px] border border-transparent font-[inherit] cursor-pointer transition-all duration-200 hover:border-white focus:outline-none focus:ring-0;
+}

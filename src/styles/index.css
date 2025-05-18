@@ -1,0 +1,75 @@
+@import url("./Button.css");
+@import url("./Input.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Additional styles */
+body {
+  font-family: Arial, sans-serif;
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #f2f4f8;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: #009ca6;
+  color: white;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: lightgrey transparent;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 6px; /* Width of the scrollbar */
+  height: 6px; /* Height of the horizontal scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1); /* Translucent dark thumb */
+  border-radius: 10px; /* Rounded edges */
+}
+
+::-webkit-scrollbar-track {
+  background-color: white; /* Transparent track */
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.transparent-icon-button {
+  @apply hover:bg-gray-300 text-gray-400 hover:bg-opacity-25 h-12 w-12 rounded-full flex items-center justify-center cursor-pointer p-2;
+}
