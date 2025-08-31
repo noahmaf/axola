@@ -1,0 +1,42 @@
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+pnpm-error.log*
+bun.lockb
+
+# Dependency lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build output
+dist/
+
+# Vite cache
+.vite/
+.cache/
+
+# Tailwind CSS JIT mode
+.tailwind/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env*.local
+
+# TypeScript build artifacts
+*.tsbuildinfo
+
+# Editor and system files
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
