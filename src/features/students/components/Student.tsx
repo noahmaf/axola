@@ -429,7 +429,7 @@ const Student = () => {
                 {/* Academic Results (placeholder – replace with your component) */}
                 <TabsContent value="academic-results" className="mt-6">
                   <AcademicResults  />
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
+                  {/* <div className="flex flex-col items-center justify-center py-16 text-center">
                     <div className="w-32 h-32 bg-gray-500 bg-opacity-15 rounded-full flex items-center justify-center mb-4">
                       <Award className="w-16 h-16 text-gray-600" />
                     </div>
@@ -439,7 +439,7 @@ const Student = () => {
                       </span>
                       ’s profile doesn’t have academic records yet.
                     </p>
-                  </div>
+                  </div> */}
                 </TabsContent>
               </Tabs>
             </div>
