@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { IoSend } from "react-icons/io5";
-import { MdDone, MdExpandLess, MdExpandMore } from "react-icons/md";
+import {  MdExpandLess, MdExpandMore } from "react-icons/md";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { GoCrossReference } from "react-icons/go";
 import SupportChatAreaFooterActionButton, {
