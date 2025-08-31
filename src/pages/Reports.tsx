@@ -17,14 +17,20 @@ import {
   ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend,
 } from "recharts";
 
+// helpers
+const asset = (p: string) =>
+  `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${p.replace(/^\//, "")}`;
+
+
 // ---------- Types ----------
 type LoginRecord = { at: string | Date };
 type ChatRow = { at: string | Date; category: string; status?: string };
 type View = "yearly" | "weekly" | "daily";
 
 // ---------- CSV paths ----------
-const LOGINS_CSV_URL = "/daily_activity_logs_rows.csv";
-const CHATS_CSV_URL = "/chats_rows.csv";
+const LOGINS_CSV_URL = asset("daily_activity_logs_rows.csv"); // -> public/daily_activity_logs_rows.csv
+const CHATS_CSV_URL  = asset("chats_rows.csv");               // -> public/chats_rows.csv
+
 
 // ---------- Colors / Sizes ----------
 const MONTH_COLORS = [
