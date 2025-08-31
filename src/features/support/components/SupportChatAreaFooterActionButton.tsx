@@ -12,9 +12,9 @@ const SupportChatAreaFooterActionButton = ({
       className="flex flex-col justify-center items-center space-y-2"
       onClick={onTap}
     >
-      <button className="rounded-full p-3 bg-secondary text-base text-white ">
+      <div className="rounded-full p-3 bg-secondary text-base text-white ">
         <Icon className="h-6 w-6" />
-      </button>
+      </div>
       <p className="text-sm text-black">{title}</p>
     </div>
   );

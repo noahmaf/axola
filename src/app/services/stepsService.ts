@@ -78,6 +78,7 @@ const stepsService = {
       .eq("step", request.step)
       .order("created_at", { ascending: false });
 
+
     if (error) throw error;
 
     const formattedStepResponses: StepResponse[] = (data || []).map(

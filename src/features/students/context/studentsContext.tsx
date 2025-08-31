@@ -3,7 +3,7 @@ import { CreateNoteRequest } from "@/app/models/Announcement";
 import { AxolaStudent } from "@/app/models/AxolaStudent";
 import { SupportNote } from "@/app/models/SupportChat";
 import studentsService from "@/app/services/studentsService";
-import { exportStudentsToCSV } from "@/app/utils/xlsx";
+import { exportStudentsToExcel } from "@/app/utils/xlsx";
 import {
   createContext,
   ReactNode,
@@ -99,7 +99,7 @@ export const StudentsProvider = ({ children }: { children: ReactNode }) => {
     if (students) {
       setIsExportLoading(true);
 
-      await exportStudentsToCSV(
+      await exportStudentsToExcel(
         "Students",
         students!.map((response) => {
           return {

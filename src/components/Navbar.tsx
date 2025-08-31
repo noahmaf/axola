@@ -10,10 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import userService from "@/app/services/userService";
+import { useSupportChats } from "@/features/support/context/supportContext";
 
 const Navbar = () => {
   const { isExpanded, setIsExpanded } = useSidebar();
   const { user, refreshSession } = useAuth();
+  const { selectChat } = useSupportChats();
 
   const handleCollapseSidebar = () => {
     setIsExpanded({ expanded: !isExpanded });
@@ -23,6 +25,7 @@ const Navbar = () => {
     if (user) {
       try {
         await userService.switchProgram({ userId: user?.id, newProgram });
+        selectChat(undefined);
         await refreshSession();
       } catch (error) {}
     }
@@ -41,13 +44,13 @@ const Navbar = () => {
               </div>
             )}
             <div className=" px-2 w-full items-start flex flex-col">
-              {!user?.owner && (
+              {user?.programs && user?.programs.length < 2 && (
                 <p className="text-secondary font-semibold">
                   {user?.currentProgram?.name}
                 </p>
               )}
 
-              {user?.owner && (
+              {user?.programs && user?.programs.length > 1 && (
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     asChild
@@ -90,7 +93,7 @@ const Navbar = () => {
               <div className="flex flex-col h-full items-end justify-center py-12">
                 <p className="font-semibold text-lg text-gray-500">{`${user.name} ${user.surname}`}</p>
                 <p className="text-base text-secondary font-semibold">{`${
-                  user.owner ? "Axola Administrator" : "Project Administrator"
+                  user.owner ? "Axola Administrator" : "Program Administrator"
                 } `}</p>
               </div>
               <div className="h-14 w-14 text-xl font-medium shrink-0 rounded-full bg-secondary flex items-center justify-center">

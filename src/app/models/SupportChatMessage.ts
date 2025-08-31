@@ -7,4 +7,5 @@ export type SupportChatMessage = {
   administrator?: string;
   sent: boolean;
   read: boolean;
+  referralNote: boolean;
 };

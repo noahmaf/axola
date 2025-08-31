@@ -1,43 +1,71 @@
-import { useState } from "react";
-import { IoMdClose, IoMdSearch } from "react-icons/io";
+
 import SupportChatsSidebarHeaderFilterButton, {
   SupportChatsSidebarHeaderFilterButtonSkeleton,
 } from "./SupportChatsSidebarHeaderFilterButton";
-import { useSupportChats } from "../context/supportContext";
+import { categoryFilters, useSupportChats } from "../context/supportContext";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 const SupportChatsSidebarHeader = ({ title }: { title: string }) => {
-  const filters = ["In Progress", "Pending Resolve", "Referred", "Resolved"];
+  const filters = [
+    "New",
+    "In Progress",
+    "Referred",
+    "Pending Resolve",
+    "Resolved",
+  ];
 
-  const [openSearch, setOpenSearch] = useState<boolean>(false);
-  const { chatFilter, setChatFilter } = useSupportChats();
+  const { chatFilter, setChatFilter, chatCategoryFilter, setChatCategoryFilter } = useSupportChats();
 
   return (
     <div className="sticky top-0 left-0 bg-white text-xl text-start font-semibold   text-black py-4 h-fit items-center flexflex-col  justify-start">
       <div className="pl-8 pr-4 space-y-3">
         <div className="flex justify-between w-full items-center">
           <p className="select-none">{title}</p>
-          <div
-            className="hover:bg-gray-100 text-gray-500 h-12 w-12 rounded-full flex items-center justify-center cursor-pointer "
-            onClick={() => {
-              setOpenSearch((prev) => !prev);
-            }}
-          >
-            {!openSearch ? (
-              <IoMdSearch className="h-7 w-7 cursor-pointer " />
-            ) : (
-              <IoMdClose className="h-6 w-6 cursor-pointer" />
-            )}
-          </div>
+          {chatFilter === "New" && (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                asChild
+                className="cursor-pointer text-xs border px-4 py-2 rounded-lg border-gray-300"
+              >
+                <div className="text-gray-800 font-medium flex items-center space-x-4">
+                  <p>{chatCategoryFilter}</p>
+                  <ChevronDown className="h-4 w-4" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="flex flex-col px-4 w-full left-0">
+                <DropdownMenuLabel>Support Case View</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+
+                {categoryFilters.map((category, id) => {
+                  const selected = category === chatCategoryFilter;
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={id}
+                      className={`${
+                        selected ? "text-secondary" : ""
+                      } cursor-pointer `}
+                      checked={selected}
+                      onCheckedChange={() => {
+                        // switchProgram(program.id);
+                        setChatCategoryFilter(category)
+                      }}
+                    >
+                      {category}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
-        {openSearch && (
-          <input
-            type="text"
-            name="search"
-            id="search"
-            placeholder="Search"
-            className="block w-full search-input "
-          />
-        )}
       </div>
       <div className="flex  h-fit  space-x-2 overflow-x-auto px-8 scrollbar-hidden pt-4 select-none">
         {filters.map((filter, index) => {

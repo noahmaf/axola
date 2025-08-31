@@ -1,31 +1,34 @@
-export async function exportStepToCSV(
+import * as XLSX from 'xlsx';
+
+export async function exportStepToExcel(
   stepName: string,
   studentResponses: any[]
 ) {
   if (!studentResponses || studentResponses.length === 0) return;
+
   try {
     const questionSet = new Set<string>();
 
-    Object.entries(studentResponses[0].response).forEach(
-      ([question, _], __) => {
+    for (var studentResponse in studentResponses) {
+      Object.entries(studentResponses[studentResponse].response).forEach(([question, _]) => {
         questionSet.add(question);
-      }
-    );
+      });
+    }
 
     const questions = Array.from(questionSet);
 
-    // Create CSV header
-    let csvContent = [
+    // Create worksheet data
+    const wsData = [
       [
         "Full Names",
         "Student Number",
         "Email",
         "Submission Date",
         ...questions,
-      ].join(","),
+      ],
     ];
 
-    // Create CSV rows
+    // Add rows
     studentResponses.forEach((student) => {
       const row = [
         student.fullName,
@@ -34,31 +37,32 @@ export async function exportStepToCSV(
         student.submissionDate,
         ...questions.map((q) => {
           const response = student.response[q];
-          return response ? `"${response}"` : "";
+          return response ? `${response}` : "";
         }),
       ];
-      csvContent.push(row.join(","));
+      wsData.push(row);
     });
 
-    // Convert array to CSV string
-    const csvString = csvContent.join("\n");
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-    // Create and download the file
-    const blob = new Blob([csvString], { type: "text/csv" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `${stepName} - Axola Submission Report.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  } catch (error) {}
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Student Responses");
+
+    // Generate Excel file and download
+    XLSX.writeFile(wb, `${stepName} - Axola Submission Report.xlsx`);
+  } catch (error) {
+    console.error("Excel export failed:", error);
+  }
 }
 
-export async function exportStudentsToCSV(title: string, students: any[]) {
+export async function exportStudentsToExcel(title: string, students: any[]) {
   if (!students || students.length === 0) return;
+
   try {
-    // Create CSV header
-    let csvContent = [
+    // Create worksheet data
+    const wsData = [
       [
         "Full Names",
         "Email",
@@ -66,10 +70,10 @@ export async function exportStudentsToCSV(title: string, students: any[]) {
         "CellPhone Number",
         "Level Of Study",
         "Study Programme",
-      ].join(","),
+      ],
     ];
 
-    // Create CSV rows
+    // Add rows
     students.forEach((student) => {
       const row = [
         student.fullName,
@@ -79,19 +83,19 @@ export async function exportStudentsToCSV(title: string, students: any[]) {
         student.levelOfStudy,
         student.studyProgramme,
       ];
-      csvContent.push(row.join(","));
+      wsData.push(row);
     });
 
-    // Convert array to CSV string
-    const csvString = csvContent.join("\n");
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-    // Create and download the file
-    const blob = new Blob([csvString], { type: "text/csv" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `${title} - Axola Report.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  } catch (error) {}
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Students");
+
+    // Generate Excel file and download
+    XLSX.writeFile(wb, `${title} - Axola Report.xlsx`);
+  } catch (error) {
+    console.error("Excel export failed:", error);
+  }
 }

@@ -1,4 +1,4 @@
-import { exportStepToCSV } from "@/app/utils/xlsx";
+import { exportStepToExcel } from "@/app/utils/xlsx";
 import { StudentStepResponseDataTable } from "@/features/step-ins/components/StudentsStepResponseDataTable";
 import { studentStepResponseColumns } from "@/features/step-ins/components/StudentStepResponseColumns";
 import { useSteps } from "@/features/step-ins/context/stepsContext";
@@ -28,7 +28,7 @@ const StepIn = () => {
   const exportResponses = async () => {
     if (currentStepResponses && currentStep) {
       setIsExportLoading(true);
-      await exportStepToCSV(
+      await exportStepToExcel(
         currentStep.title,
         convertCurrentStepResponsesToTableData()
       );
@@ -50,8 +50,8 @@ const StepIn = () => {
   };
 
   return (
-    <div className="flex flex-col w-full bg-white items-center justify-start h-fit min-h-full text-black px-8 py-4">
-      <div className=" flex w-full  justify-between  items-center ">
+    <div className=" bg-white items-center justify-start  text-black px-8 pb-4 flex-1 overflow-y-auto  space-y-2">
+      <div className="bg-white z-10 flex w-full py-4 justify-between  items-center sticky top-0 left-0 ">
         <p className="text-xl font-semibold text-secondary select-none">
           {stepState.title}
         </p>
@@ -85,7 +85,7 @@ const StepIn = () => {
         </div>
       ) : (
         currentStepResponses && (
-          <div className="w-full  pt-4">
+          <div className="w-full  ">
             <StudentStepResponseDataTable
               columns={studentStepResponseColumns}
               data={convertCurrentStepResponsesToTableData()}

@@ -10,6 +10,7 @@ export interface AxolaUser {
   owner: boolean;
   currentProgram: AxolaProgram | null;
   programs: AxolaProgram[];
+  assignedCategories: string[];
 }
 
 export interface GetUserProfileRequest {

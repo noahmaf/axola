@@ -1,17 +1,33 @@
-import { format, differenceInDays } from "date-fns";
+import {
+  format,
+  isAfter,
+  isSameDay,
+  differenceInCalendarDays,
+} from "date-fns";
 
 export function formatChatTimestamp(dateString: string) {
-  const date = new Date(dateString); // Convert to Date object
-  const now = new Date();
-  const daysDiff = differenceInDays(now, date);
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
 
-  if (daysDiff === 0) {
-    return format(date, "HH:mm"); // Show only time (e.g., "14:35")
-  } else if (daysDiff === 1) {
-    return "Yesterday";
-  } else if (daysDiff <= 7) {
-    return format(date, "EEEE"); // Show weekday name (e.g., "Monday")
-  } else {
-    return format(date, "dd/MM/yyyy"); // Show full date (e.g., "25/02/2025")
+  const now = new Date();
+  const diffDays = differenceInCalendarDays(now, date);
+
+  // Any future timestamp (including later today) → full date & time
+  if (diffDays < 0 || (diffDays === 0 && isAfter(date, now))) {
+    return format(date, "dd/MM/yyyy, HH:mm");
   }
+
+  if (diffDays === 0 && isSameDay(date, now)) {
+    return `Today, ${format(date, "HH:mm")}`;
+  }
+
+  if (diffDays === 1) {
+    return `Yesterday, ${format(date, "HH:mm")}`;
+  }
+
+  if (diffDays <= 7) {
+    return `${format(date, "EEEE")}, ${format(date, "HH:mm")}`;
+  }
+
+  return format(date, "dd/MM/yyyy, HH:mm");
 }

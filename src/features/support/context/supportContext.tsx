@@ -1,5 +1,5 @@
 import { useAuth } from "@/app/context/authContext";
-import { SupportChat } from "@/app/models/SupportChat";
+import { ProgramAdmin, SupportChat } from "@/app/models/SupportChat";
 import { SupportChatMessage } from "@/app/models/SupportChatMessage";
 import supportChatsService from "@/app/services/supportService";
 import {
@@ -10,9 +10,12 @@ import {
   useState,
 } from "react";
 
+export const categoryFilters = ["All Cases", "Assigned Category Cases"];
+
 const SupportChatsContext = createContext<{
   chats: SupportChat[];
   chatsLoading: boolean;
+  adminsLoading: boolean;
   sendChatMessageLoading: boolean;
   messagesLoading: boolean;
   resolveChatLoading: boolean;
@@ -21,9 +24,20 @@ const SupportChatsContext = createContext<{
   selectedChat: SupportChat | undefined;
   chatFilter: string;
   chatFirstLoad: boolean;
+  referChatLoading: boolean;
   revertResolveChatLoading: boolean;
   currentChatMessages: SupportChatMessage[];
+  chatCategoryFilter: string;
+  admins: ProgramAdmin[];
+  referChat: ({
+    referralNotes,
+    administrator,
+  }: {
+    referralNotes: string;
+    administrator: string;
+  }) => Promise<void>;
   fetchChats: () => Promise<void>;
+  fetchAdmins: () => Promise<void>;
   sendChatMessage: ({ message }: { message: string }) => Promise<void>;
   resolveChat: ({ chatId }: { chatId: string }) => Promise<void>;
   revertResolveChat: ({ chatId }: { chatId: string }) => Promise<void>;
@@ -31,25 +45,33 @@ const SupportChatsContext = createContext<{
   setIsStudentInfoPaneOpen: (updateIsStudentInfoPaneOpen: boolean) => void;
   setChatFirstLoad: (updateChatFirstLoad: boolean) => void;
   setChatFilter: (updateChatFilter: string) => void;
+  setChatCategoryFilter: (updateChatCategoryFilter: string) => void;
 }>({
   chats: [],
+  admins: [],
   currentChatMessages: [],
   chatsLoading: true,
+  adminsLoading: true,
   sendChatMessageLoading: false,
   messagesLoading: false,
+  referChatLoading: false,
   resolveChatLoading: false,
   chatFirstLoad: true,
   revertResolveChatLoading: false,
   error: "",
+  chatCategoryFilter: categoryFilters[1],
   selectedChat: undefined,
   isStudentInfoPaneOpen: false,
   chatFilter: "",
   fetchChats: async () => {},
+  referChat: async () => {},
+  fetchAdmins: async () => {},
   sendChatMessage: async () => {},
   resolveChat: async () => {},
   selectChat: async () => {},
   setIsStudentInfoPaneOpen: () => {},
   setChatFilter: () => {},
+  setChatCategoryFilter: () => {},
   setChatFirstLoad: () => {},
   revertResolveChat: async () => {},
 });
@@ -60,9 +82,11 @@ export const SupportChatsProvider = ({ children }: { children: ReactNode }) => {
     SupportChatMessage[]
   >([]);
   const [chatsLoading, setChatsLoading] = useState(true);
+  const [adminsLoading, setAdminsLoading] = useState(true);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [sendChatMessageLoading, setSendChatMessageLoading] = useState(false);
   const [resolveChatLoading, setResolveChatLoading] = useState(false);
+  const [referChatLoading, setReferChatLoading] = useState(false);
   const [revertResolveChatLoading, setRevertResolveChatLoading] =
     useState(false);
   const [chatFilter, setChatFilter] = useState<string>("In Progress");
@@ -73,31 +97,11 @@ export const SupportChatsProvider = ({ children }: { children: ReactNode }) => {
   const [selectedChat, setSelectedChat] = useState<SupportChat | undefined>(
     undefined
   );
+  const [admins, setAdmins] = useState<ProgramAdmin[]>([]);
   const [isChatFirstLoad, setIsChatFirstLoad] = useState(true);
-
-  useEffect(() => {
-    fetchChats();
-
-    // Subscribe to real-time updates
-    const handleSupportChatsUpdate = (
-      updatedChats: SupportChat[],
-      updatedChatMessages: SupportChatMessage[]
-    ) => {
-      setChats(updatedChats);
-      setCurrentChatMessages(updatedChatMessages);
-    };
-
-    if (isAuthenticated) {
-      supportChatsService.addListener(handleSupportChatsUpdate);
-      supportChatsService.subscribeToChanges(user!.currentProgram!.id);
-    }
-
-    return () => {
-      supportChatsService.removeListener(handleSupportChatsUpdate);
-      supportChatsService.unsubscribeFromChanges();
-      supportChatsService.unsubscribeFromChatMessages();
-    };
-  }, [user]);
+  const [chatCategoryFilter, setChatCategoryFilter] = useState<string>(
+    categoryFilters[1]
+  );
 
   const fetchChats = async () => {
     if (isAuthenticated) {
@@ -119,9 +123,29 @@ export const SupportChatsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const fetchAdmins = async () => {
+    if (isAuthenticated) {
+      setAdminsLoading(true);
+      try {
+        const programAdmins = await supportChatsService.fetchProgramAdmins({
+          program: user?.currentProgram?.id ?? "",
+        });
+
+        setAdmins(programAdmins.filter((admin) => admin.id !== user?.id));
+      } catch (err) {
+        setError(err);
+      } finally {
+        setAdminsLoading(false);
+      }
+    } else {
+      setAdminsLoading(false);
+    }
+  };
+
   const sendChatMessage = async ({ message }: { message: string }) => {
     if (isAuthenticated) {
       setSendChatMessageLoading(true);
+
       setCurrentChatMessages((prev) => [
         ...prev,
         {
@@ -132,9 +156,16 @@ export const SupportChatsProvider = ({ children }: { children: ReactNode }) => {
           administrator: user?.id,
           sent: true,
           read: false,
+          referralNote: false
         },
       ]);
       try {
+        if (selectedChat?.status == "New") {
+          await await supportChatsService.assignChat({
+            administrator: user?.id ?? "",
+            chat: selectedChat?.id ?? "",
+          });
+        }
         await supportChatsService.sendMessage({
           message: message,
           administrator: user?.id ?? "",
@@ -160,6 +191,32 @@ export const SupportChatsProvider = ({ children }: { children: ReactNode }) => {
         setError(err);
       } finally {
         setResolveChatLoading(false);
+      }
+    }
+  };
+
+  const referChat = async ({
+    referralNotes,
+    administrator,
+  }: {
+    referralNotes: string;
+    administrator: string;
+  }) => {
+    if (isAuthenticated) {
+      setReferChatLoading(true);
+
+      try {
+        await supportChatsService.referChat({
+          referralNotes,
+          administrator,
+          referredBy: user!.id,
+          chat: selectedChat!.id,
+        });
+      } catch (err) {
+        console.log(err);
+        setError(err);
+      } finally {
+        setReferChatLoading(false);
       }
     }
   };
@@ -223,9 +280,39 @@ export const SupportChatsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  useEffect(() => {
+    fetchChats();
+    fetchAdmins();
+    // Subscribe to real-time updates
+    const handleSupportChatsUpdate = (
+      updatedChats: SupportChat[],
+      updatedChatMessages: SupportChatMessage[]
+    ) => {
+      setChats(updatedChats);
+      setCurrentChatMessages(updatedChatMessages);
+    };
+
+    if (isAuthenticated) {
+      supportChatsService.addListener(handleSupportChatsUpdate);
+      supportChatsService.subscribeToChanges(user!.currentProgram!.id);
+    }
+
+    return () => {
+      supportChatsService.removeListener(handleSupportChatsUpdate);
+      supportChatsService.unsubscribeFromChanges();
+      supportChatsService.unsubscribeFromChatMessages();
+    };
+  }, [user]);
+
   return (
     <SupportChatsContext.Provider
       value={{
+        admins,
+        referChat,
+        fetchAdmins,
+        referChatLoading,
+        adminsLoading,
+        chatCategoryFilter,
         chats,
         currentChatMessages,
         selectedChat,
@@ -245,6 +332,7 @@ export const SupportChatsProvider = ({ children }: { children: ReactNode }) => {
         selectChat,
         setIsStudentInfoPaneOpen,
         setChatFilter,
+        setChatCategoryFilter,
         setChatFirstLoad: setIsChatFirstLoad,
       }}
     >

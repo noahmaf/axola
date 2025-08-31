@@ -9,8 +9,18 @@ export type SupportChat = {
   user: AxolaStudent;
   category: string;
   status: string;
+  assignee?: string;
+  referredBy?: string;
   latestMessage: SupportChatMessage;
   program: string;
+};
+
+export type ProgramAdmin = {
+  id: string;
+  name: string;
+  surname: string;
+  avatar: string;
+  categories: string[];
 };
 
 export type SupportNote = {
@@ -30,6 +40,10 @@ export interface FetchSupportChatsRequest {
   status: string;
 }
 
+export interface FetchProgramAdminsRequest {
+  program: string;
+}
+
 export interface FetchSupportChatMessagesRequest {
   chat: string;
 }
@@ -47,4 +61,16 @@ export interface SendMessageRequest {
 
 export interface ResolveChatRequest {
   chat: string;
+}
+
+export interface AssignChatRequest {
+  chat: string;
+  administrator: string;
+}
+
+export interface ReferChatRequest {
+  chat: string;
+  administrator: string;
+  referredBy: string;
+  referralNotes: string;
 }

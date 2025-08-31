@@ -21,33 +21,7 @@ const SupportChatsSidebarChatCard = ({ chat }: { chat: SupportChat }) => {
         )}
       </div>
 
-      <div className="ml-4 flex flex-col items-start justify-center w-full ">
-        <p className="font-semibold text-black">{`${chat.user.name} ${chat.user.surname}`}</p>
-        <p
-          className={`${
-            chat.latestMessage.read === false &&
-            chat.latestMessage.administrator === null
-              ? "text-orange-500"
-              : "text-gray-500"
-          }
-           text-base font-medium line-clamp-2`}
-        >
-          {chat.latestMessage.content}
-        </p>
-      </div>
-
-      <div className="flex flex-col justify-center space-y-4 items-end">
-        <p
-          className={`${
-            chat.latestMessage.read === false &&
-            chat.latestMessage.administrator === null
-              ? "text-orange-500"
-              : "text-gray-500"
-          }
-           text-base font-medium`}
-        >
-          {formatChatTimestamp(chat.latestMessage.dateCreated)}
-        </p>
+      <div className="ml-4 flex flex-col items-start justify-center w-full">
         <div
           className={`${
             chat.category === "Accommodation"
@@ -63,7 +37,7 @@ const SupportChatsSidebarChatCard = ({ chat }: { chat: SupportChat }) => {
               : chat.category === "General"
               ? "bg-purple-500"
               : ""
-          } bg-opacity-10 px-4 w-[145px] py-1 rounded-full justify-center items-center text-center`}
+          } bg-opacity-10 px-4 flex w-fit py-1 rounded-full justify-center items-center text-center mb-4`}
         >
           <p
             className={`${
@@ -80,11 +54,37 @@ const SupportChatsSidebarChatCard = ({ chat }: { chat: SupportChat }) => {
                 : chat.category === "General"
                 ? "text-purple-500"
                 : ""
-            } text-sm font-semibold`}
+            } text-sm font-semibold line-clamp-1`}
           >
             {chat.category}
           </p>
         </div>
+        <p className="font-semibold text-black">{`${chat.user.name} ${chat.user.surname}`}</p>
+        <p
+          className={`${
+            chat.latestMessage.read === false &&
+            chat.latestMessage.administrator === null
+              ? "text-orange-500"
+              : "text-gray-500"
+          }
+           text-base font-medium line-clamp-2`}
+        >
+          {chat.latestMessage.content}
+        </p>
+      </div>
+
+      <div className="flex flex-col justify-center space-y-4 items-end   w-[25%]">
+        <p
+          className={`${
+            chat.latestMessage.read === false &&
+            chat.latestMessage.administrator === null
+              ? "text-orange-500"
+              : "text-gray-500"
+          }
+           text-base font-medium`}
+        >
+          {formatChatTimestamp(chat.latestMessage.dateCreated)}
+        </p>
       </div>
     </div>
   );
@@ -94,7 +94,7 @@ export default SupportChatsSidebarChatCard;
 
 export const SupportChatsSidebarChatCardSkeleton = () => {
   return (
-    <div className="bg-white shadow-sm py-4 px-8  flex h-fit items-center select-none text-transparent animate-pulse">
+    <div className="bg-white shadow-sm py-4 px-8  flex h-fit items-center  text-transparent animate-pulse">
       <div className="h-14 w-14 shrink-0 rounded-full bg-secondary bg-opacity-20 flex items-center justify-center">
         <div className="h-14 w-14 rounded-full items-center justify-center">
           _

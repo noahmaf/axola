@@ -2,9 +2,13 @@ import { supabase } from "@/api/supabaseClient";
 
 import { formatDateTime } from "@/app/utils/dateFormat";
 import {
+  AssignChatRequest,
+  FetchProgramAdminsRequest,
   FetchSupportChatMessagesRequest,
   FetchSupportChatsRequest,
   OpenChatRequest,
+  ProgramAdmin,
+  ReferChatRequest,
   ResolveChatRequest,
   SendMessageRequest,
   SupportChat,
@@ -25,6 +29,39 @@ const supportChatsService = {
     typeof supabase.channel
   > | null,
 
+  async fetchProgramAdmins(
+    fetchProgramAdminsRequest: FetchProgramAdminsRequest
+  ) {
+    try {
+      const { data, error } = await supabase
+        .from("administrator_programs")
+        .select(
+          "admin_id:administrator,info:administrators(name,surname,avatar:profile_picture,categories:assigned_categories)"
+        )
+        .eq("program", fetchProgramAdminsRequest.program);
+      if (error) throw error;
+
+      const formattedProgramAdmins: ProgramAdmin[] = (data || []).map(
+        (admin) => {
+          const info = Array.isArray(admin.info)
+            ? admin.info[0] ?? null
+            : admin.info;
+          return {
+            id: admin.admin_id,
+            name: info.name,
+            surname: info.surname,
+            categories: info.categories,
+            avatar: info.avatar,
+          };
+        }
+      );
+
+      return formattedProgramAdmins;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   async fetchSupportChats(fetchSupportChatsRequest: FetchSupportChatsRequest) {
     try {
       const { data, error } = await supabase
@@ -43,6 +80,9 @@ const supportChatsService = {
           title: chat.title,
           dateCreated: formatDateTime(chat.created_at),
           dateUpdated: formatDateTime(chat.updated_at),
+          assignee: chat.assignee,
+          referredBy: chat.referred_by,
+          is_new: chat.is_new ?? false,
           user: {
             id: chat.user.id,
             program: {
@@ -73,6 +113,7 @@ const supportChatsService = {
             student: chat.latest_message.student,
             sent: chat.latest_message.administrator !== null,
             read: chat.latest_message.read,
+            referralNote: chat.latest_message.referral_note,
           },
         };
       });
@@ -126,6 +167,7 @@ const supportChatsService = {
           student: chatMessage.student,
           sent: chatMessage.administrator !== null,
           read: chatMessage.read,
+          referralNote: chatMessage.referral_note,
         };
       }
     );
@@ -150,6 +192,45 @@ const supportChatsService = {
     });
 
     return data;
+  },
+
+  async assignChat(assignChatRequest: AssignChatRequest) {
+    const { data, error } = await supabase
+      .from("chats")
+      .update({
+        status: "In Progress",
+        assignee: assignChatRequest.administrator,
+      })
+      .eq("id", assignChatRequest.chat);
+
+    if (error) throw error;
+
+    return data;
+  },
+
+  async referChat(referChatRequest: ReferChatRequest) {
+    const { error } = await supabase
+      .from("chats")
+      .update({
+        assignee: referChatRequest.administrator,
+        referred_by: referChatRequest.referredBy,
+      })
+      .eq("id", referChatRequest.chat);
+
+    if (error) throw error;
+
+    const { data: noteData, error: noteError } = await supabase
+      .from("chat_messages")
+      .insert({
+        chat: referChatRequest.chat,
+        content: referChatRequest.referralNotes,
+        administrator: referChatRequest.referredBy,
+        referral_note: true,
+      });
+
+    if (noteError) throw noteError;
+
+    return noteData;
   },
 
   async resolveChat(resolveChatRequest: ResolveChatRequest) {
@@ -249,6 +330,7 @@ const supportChatsService = {
               student: payload.new.student,
               sent: payload.new.administrator !== null,
               read: payload.new.read,
+              referralNote: payload.new.referral_note,
             };
           } else if (payload.new.student !== null) {
             supportChatsService.currentChatMessages.push({
@@ -260,6 +342,7 @@ const supportChatsService = {
               student: payload.new.student,
               sent: payload.new.administrator !== null,
               read: payload.new.read,
+              referralNote: payload.new.referral_note,
             });
           }
           supportChatsService.notifyListeners();

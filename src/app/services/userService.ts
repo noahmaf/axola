@@ -59,6 +59,7 @@ const userService = {
           (program) => program.id === userDetails.current_program
         ) ?? null,
       programs: programs,
+      assignedCategories: userDetails.assigned_categories,
     };
 
     return axolaAdminUser;

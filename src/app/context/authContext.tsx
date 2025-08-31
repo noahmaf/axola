@@ -122,7 +122,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setError(null);
       await authService.sendPasswordResetEmail({
         email: email,
-        redirectTo: "http://localhost:5173/reset-password",
+        redirectTo: "https://axola.co.za/reset-password",
       });
     } catch (err: any) {
       setError(err.message ?? "Something went wrong.");

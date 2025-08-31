@@ -51,6 +51,11 @@ export interface UpdateStepSchema {
   image: string;
 }
 
+export interface ReferChatSchema {
+  referralNotes: string;
+  referralAdmin: string;
+}
+
 export interface UpdateStepRequest {
   originalStep: Step;
   updatedStep: Partial<Step>;
