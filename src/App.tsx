@@ -26,7 +26,7 @@ function App() {
     <>
       <Toaster position="top-right" expand={true} richColors />
       <SidebarProvider>
-        <BrowserRouter>
+        <BrowserRouter basename="/axola">
           <Routes>
             <Route element={<AppLayout />}>
               <Route path="/" element={<Home />} />
