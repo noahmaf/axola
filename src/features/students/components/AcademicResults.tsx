@@ -4,11 +4,11 @@ import { Progress } from '@/components/ui/progress';
 import { Target, BookOpen, BarChart3, AlertTriangle, CheckCircle2, Percent } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-interface AcademicResultsProps {
-  studentName: string;
-}
+// interface AcademicResultsProps {
+//   studentName: string;
+// }
 
-export function AcademicResults({ studentName }: AcademicResultsProps) {
+export function AcademicResults() {
   // Mock academic data
   const gpaData = [
     { semester: 'Quarter 1', gpa: 3.2, cumulative: 3.2 },

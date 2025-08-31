@@ -21,7 +21,6 @@ import { forwardRef, useEffect, useState } from "react";
 import studentsService from "@/app/services/studentsService";
 import { AxolaStudentInfo } from "@/app/models/AxolaStudent";
 import CircularLoadingSpinner from "@/components/CircularLoadingSpinner";
-import EmptyResponses from "@/assets/images/empty-step-responses.png";
 import StudentChatCard from "./StudentChatCard";
 import StudentStepResponseCard from "./StudentStepResponseCard";
 import StudentNoteCard from "./StudentNoteCard";
@@ -429,7 +428,7 @@ const Student = () => {
 
                 {/* Academic Results (placeholder – replace with your component) */}
                 <TabsContent value="academic-results" className="mt-6">
-                  <AcademicResults studentName={studentFullName} />
+                  <AcademicResults  />
                   <div className="flex flex-col items-center justify-center py-16 text-center">
                     <div className="w-32 h-32 bg-gray-500 bg-opacity-15 rounded-full flex items-center justify-center mb-4">
                       <Award className="w-16 h-16 text-gray-600" />

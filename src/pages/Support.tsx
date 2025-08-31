@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import SupportChatsSidebar from "@/features/support/components/SupportChatsSidebar";
 import SupportChatArea from "@/features/support/components/SupportChatArea";
-import { AlertDialog } from "@/components/ui/alert-dialog";
 
 const MIN_PERCENT = 20; // sidebar min
 const MAX_PERCENT = 70; // sidebar max

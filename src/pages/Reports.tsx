@@ -179,21 +179,21 @@ function bucketsDay(anchor: Date, today: Date) {
 }
 
 // Range helper for windows
-function currentWindowRange(view: View, anchor: Date, today: Date): { start: Date; end: Date } {
-  if (view === "yearly") {
-    const months = bucketsYear(anchor, today);
-    const endIdx = months.length - 1;
-    return { start: months[0]._rangeStart, end: months[endIdx]._rangeEnd };
-  }
-  if (view === "weekly") {
-    const days = bucketsWeek(anchor, today);
-    const endIdx = days.length - 1;
-    return { start: days[0]._rangeStart, end: days[endIdx]._rangeEnd };
-  }
-  const hours = bucketsDay(anchor, today);
-  const endIdx = hours.length - 1;
-  return { start: hours[0]._rangeStart, end: hours[endIdx]._rangeEnd };
-}
+// function currentWindowRange(view: View, anchor: Date, today: Date): { start: Date; end: Date } {
+//   if (view === "yearly") {
+//     const months = bucketsYear(anchor, today);
+//     const endIdx = months.length - 1;
+//     return { start: months[0]._rangeStart, end: months[endIdx]._rangeEnd };
+//   }
+//   if (view === "weekly") {
+//     const days = bucketsWeek(anchor, today);
+//     const endIdx = days.length - 1;
+//     return { start: days[0]._rangeStart, end: days[endIdx]._rangeEnd };
+//   }
+//   const hours = bucketsDay(anchor, today);
+//   const endIdx = hours.length - 1;
+//   return { start: hours[0]._rangeStart, end: hours[endIdx]._rangeEnd };
+// }
 
 // ---------- Login bucketing (Chart 1) ----------
 function bucketizeLogins(records: LoginRecord[], view: View, anchor: Date, today: Date) {
@@ -485,7 +485,7 @@ const Reports: React.FC = () => {
     }
     return Object.entries(counts).map(([name, value]) => ({ name, value }));
   }, [chatRows, today]);
-  const totalPie = React.useMemo(() => pieData.reduce((a, b) => a + b.value, 0), [pieData]);
+  // const totalPie = React.useMemo(() => pieData.reduce((a, b) => a + b.value, 0), [pieData]);
 
   // ---------- RENDER ----------
   return (

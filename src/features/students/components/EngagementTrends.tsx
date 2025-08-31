@@ -79,10 +79,10 @@ export function EngagementTrends({ studentName }: EngagementTrendsProps) {
     { week: "Week 4", engagement: 91 },
   ];
 
-  const totalActivities = activityBreakdown.reduce(
-    (sum, item) => sum + item.value,
-    0
-  );
+//   const totalActivities = activityBreakdown.reduce(
+//     (sum, item) => sum + item.value,
+//     0
+//   );
 
   return (
     <div className="space-y-8">

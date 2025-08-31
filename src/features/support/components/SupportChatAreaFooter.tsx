@@ -50,7 +50,7 @@ const SupportChatAreaFooter = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const maxRows = 4;
 
-  const { register, handleSubmit, setValue, reset, control } =
+  const { register, handleSubmit, setValue, reset } =
     useForm<ReferChatSchema>();
 
   useEffect(() => {
