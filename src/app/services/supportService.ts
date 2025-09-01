@@ -15,8 +15,6 @@ import {
   SupportChat,
 } from "../models/SupportChat";
 import { SupportChatMessage } from "../models/SupportChatMessage";
-import { v4 } from "uuid";
-import Student from "@/features/students/components/Student";
 
 const supportChatsService = {
   supportChats: [] as SupportChat[],
@@ -131,6 +129,7 @@ const supportChatsService = {
   },
 
   async openChat(openChatRequest: OpenChatRequest) {
+    
     const { data, error } = await supabase
       .from("chat_messages")
       .update({
@@ -226,7 +225,7 @@ const supportChatsService = {
           status: "Engage",
           user: student, // student id
           assignee: administrator, // admin/assignee id
-          program: sendEngagementRequest.program
+          program: sendEngagementRequest.program,
         })
         .select("id")
         .single();
@@ -367,7 +366,6 @@ const supportChatsService = {
       { event: "INSERT", schema: "public", table: "chat_messages" },
       async (payload) => {
         if (payload.new.chat == chat) {
-          await supportChatsService.openChat({ chat: chat, program });
           if (payload.new.administrator !== null) {
             supportChatsService.currentChatMessages[
               supportChatsService.currentChatMessages.length - 1
@@ -383,6 +381,8 @@ const supportChatsService = {
               referralNote: payload.new.referral_note,
             };
           } else if (payload.new.student !== null) {
+            await supportChatsService.openChat({ chat: chat, program });
+
             supportChatsService.currentChatMessages.push({
               id: payload.new.id,
               chat: payload.new.chat,
