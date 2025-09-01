@@ -15,6 +15,7 @@ import { ChevronDown } from "lucide-react";
 
 const SupportChatsSidebarHeader = ({ title }: { title: string }) => {
   const filters = [
+    "Engagements",
     "New",
     "In Progress",
     "Referred",

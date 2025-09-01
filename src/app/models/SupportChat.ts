@@ -59,6 +59,14 @@ export interface SendMessageRequest {
   message: string;
 }
 
+export interface SendEngagementRequest {
+  student: string;
+  administrator: string;
+  program: string;
+  message: string;
+  adminName:string;
+}
+
 export interface ResolveChatRequest {
   chat: string;
 }

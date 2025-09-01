@@ -11,10 +11,10 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 export function AcademicResults() {
   // Mock academic data
   const gpaData = [
-    { semester: 'Quarter 1', gpa: 3.2, cumulative: 3.2 },
-    { semester: 'Quarter 2', gpa: 3.6, cumulative: 3.4 },
-    { semester: 'Quarter 3', gpa: 3.8, cumulative: 3.53 },
-    { semester: 'Quarter 4', gpa: 3.9, cumulative: 3.63 },
+    { semester: 'Quarter 1', gpa: 53, cumulative: 53 },
+    { semester: 'Quarter 2', gpa: 56, cumulative: 54.5 },
+    { semester: 'Quarter 3', gpa: 58, cumulative: 55.6 },
+    { semester: 'Quarter 4', gpa: 69, cumulative: 59 },
   ];
 
   const subjectPerformance = [

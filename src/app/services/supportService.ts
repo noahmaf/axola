@@ -10,10 +10,13 @@ import {
   ProgramAdmin,
   ReferChatRequest,
   ResolveChatRequest,
+  SendEngagementRequest,
   SendMessageRequest,
   SupportChat,
 } from "../models/SupportChat";
 import { SupportChatMessage } from "../models/SupportChatMessage";
+import { v4 } from "uuid";
+import Student from "@/features/students/components/Student";
 
 const supportChatsService = {
   supportChats: [] as SupportChat[],
@@ -194,6 +197,53 @@ const supportChatsService = {
     return data;
   },
 
+  async sendStudentEngagement(sendEngagementRequest: SendEngagementRequest) {
+    const { student, administrator, message } = sendEngagementRequest;
+
+    const trimmed = (message ?? "").trim();
+    if (!trimmed) throw new Error("Message cannot be empty");
+
+    // 1) Check if a chat already exists for (student, assignee)
+    const { data: existing, error: findErr } = await supabase
+      .from("chats")
+      .select("id")
+      .eq("user", student)
+      .eq("assignee", administrator)
+      .eq("status", "Engage")
+      .limit(1);
+
+    if (findErr) throw findErr;
+
+    let chatId = existing?.[0]?.id as string;
+
+    // 2) If not found, create a new chat
+    if (!chatId) {
+      const { data: created, error: insertErr } = await supabase
+        .from("chats")
+        .insert({
+          title: sendEngagementRequest.adminName,
+          category: "General",
+          status: "Engage",
+          user: student, // student id
+          assignee: administrator, // admin/assignee id
+          program: sendEngagementRequest.program
+        })
+        .select("id")
+        .single();
+
+      if (insertErr) throw insertErr;
+      chatId = created.id;
+    }
+
+    // 3) Send the message using the resolved chatId
+    await supportChatsService.sendMessage({
+      chat: chatId,
+      administrator,
+      message: trimmed,
+    });
+
+    return { id: chatId };
+  },
   async assignChat(assignChatRequest: AssignChatRequest) {
     const { data, error } = await supabase
       .from("chats")

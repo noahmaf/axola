@@ -9,6 +9,7 @@ import { useAuth } from "@/app/context/authContext";
 import { useMemo } from "react";
 
 const MATCHED_STATUSES = new Set([
+  "Engagements",
   "New",
   "In Progress",
   "Pending Resolve",
@@ -32,6 +33,9 @@ const SupportChatsSidebar = ({ width }: { width: string }) => {
       user!.assignedCategories!.includes(category);
 
     const out = chats.filter((chat) => {
+      if (chatFilter === "Engagements") {
+        return chat.status === "Engage" && chat.assignee == user?.id; // show all New when not filtering to assigned categories
+      }
       // “New”
       if (chatFilter === "New") {
         if (chatCategoryFilter === "Assigned Category Cases") {
@@ -52,7 +56,8 @@ const SupportChatsSidebar = ({ width }: { width: string }) => {
         if (chat.referredBy && chat.referredBy === user?.id) return false;
 
         // If assigned to me, include. If unassigned but in my category, include.
-        if (chat.assignee && chat.assignee === user?.id) return  chat.status === chatFilter;
+        if (chat.assignee && chat.assignee === user?.id)
+          return chat.status === chatFilter;
 
         // Else still allow general match to keep your original “status only” rule:
         return chat.status === chatFilter && inAssignedCategory(chat.category);
@@ -62,7 +67,8 @@ const SupportChatsSidebar = ({ width }: { width: string }) => {
       if (chatFilter === "Referred") {
         // show if I referred it OR it’s in my category (keep your earlier idea)
         if (chat.referredBy && chat.referredBy === user?.id) return true;
-        if (inAssignedCategory(chat.category) && chat.status === chatFilter) return true;
+        if (inAssignedCategory(chat.category) && chat.status === chatFilter)
+          return true;
         return chat.status === chatFilter; // fallback to status-only if you want broader view
       }
 

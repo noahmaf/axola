@@ -11,11 +11,14 @@ import {
 } from "./ui/dropdown-menu";
 import userService from "@/app/services/userService";
 import { useSupportChats } from "@/features/support/context/supportContext";
+import { useStudents } from "@/features/students/context/studentsContext";
+import studentsService from "@/app/services/studentsService";
 
 const Navbar = () => {
   const { isExpanded, setIsExpanded } = useSidebar();
   const { user, refreshSession } = useAuth();
   const { selectChat } = useSupportChats();
+  const {fetchStudents}= useStudents();
 
   const handleCollapseSidebar = () => {
     setIsExpanded({ expanded: !isExpanded });
@@ -26,6 +29,8 @@ const Navbar = () => {
       try {
         await userService.switchProgram({ userId: user?.id, newProgram });
         selectChat(undefined);
+        studentsService.students =[];
+        await fetchStudents();
         await refreshSession();
       } catch (error) {}
     }

@@ -28,6 +28,7 @@ import { IoAdd, IoClose } from "react-icons/io5";
 import UploadStudentDialog from "@/features/students/components/UploadStudentDialog";
 import { useAuth } from "@/app/context/authContext";
 import EmptyResponses from "@/assets/images/empty-step-responses.png";
+import { v4 } from "uuid";
 
 interface StudentsFilterSchema {
   studyLevel: string;
@@ -236,7 +237,7 @@ const AllStudents = () => {
             })
             .map((student: AxolaStudent) => {
               return (
-                <StudentCard key={student.studentNumber} student={student} />
+                <StudentCard key={v4()} student={student} />
               );
             })}
           {students
