@@ -184,23 +184,6 @@ function bucketsDay(anchor: Date, today: Date) {
   return arr;
 }
 
-// Range helper for windows
-// function currentWindowRange(view: View, anchor: Date, today: Date): { start: Date; end: Date } {
-//   if (view === "yearly") {
-//     const months = bucketsYear(anchor, today);
-//     const endIdx = months.length - 1;
-//     return { start: months[0]._rangeStart, end: months[endIdx]._rangeEnd };
-//   }
-//   if (view === "weekly") {
-//     const days = bucketsWeek(anchor, today);
-//     const endIdx = days.length - 1;
-//     return { start: days[0]._rangeStart, end: days[endIdx]._rangeEnd };
-//   }
-//   const hours = bucketsDay(anchor, today);
-//   const endIdx = hours.length - 1;
-//   return { start: hours[0]._rangeStart, end: hours[endIdx]._rangeEnd };
-// }
-
 // ---------- Login bucketing (Chart 1) ----------
 function bucketizeLogins(records: LoginRecord[], view: View, anchor: Date, today: Date) {
   if (view === "yearly") {
@@ -472,10 +455,28 @@ const Reports: React.FC = () => {
     [catTotalsYear]
   );
 
-  // ===== Chart 3 (independent, current MONTH-to-date) =====
+  // ===== Chart 3 controls (independent, month paging) =====
+  const [pieMonthAnchor, setPieMonthAnchor] = React.useState<Date>(startOfMonth(today));
+
+  const piePrevMonth = () => {
+    setPieMonthAnchor((d) => startOfMonth(addMonths(d, -1)));
+  };
+
+  const pieNextMonth = () => {
+    setPieMonthAnchor((d) => {
+      const next = startOfMonth(addMonths(d, 1));
+      // don't go past current month
+      return +next > +startOfMonth(today) ? d : next;
+    });
+  };
+
+  const pieNextDisabled = +startOfMonth(pieMonthAnchor) >= +startOfMonth(today);
+  const pieHeaderLabel = `${pieMonthAnchor.toLocaleString("default", { month: "long" })} ${pieMonthAnchor.getFullYear()}`;
+
+  // ===== Chart 3 (independent, selected MONTH) =====
   const pieData = React.useMemo(() => {
-    const start = startOfMonth(today);
-    const end = endOfMonth(today);
+    const start = startOfMonth(pieMonthAnchor);
+    const end = endOfMonth(pieMonthAnchor);
     const counts: Record<string, number> = {
       "New": 0,
       "In Progress": 0,
@@ -490,8 +491,7 @@ const Reports: React.FC = () => {
       }
     }
     return Object.entries(counts).map(([name, value]) => ({ name, value }));
-  }, [chatRows, today]);
-  // const totalPie = React.useMemo(() => pieData.reduce((a, b) => a + b.value, 0), [pieData]);
+  }, [chatRows, pieMonthAnchor]);
 
   // ---------- RENDER ----------
   return (
@@ -609,7 +609,7 @@ const Reports: React.FC = () => {
                     .map((cat) => (
                       <Line
                         key={cat}
-                        type="linear"              // <-- STRAIGHT LINE (changed)
+                        type="linear"              // <-- STRAIGHT LINE
                         dataKey={cat}
                         name={cat}
                         stroke={catColorMap2[cat]}
@@ -637,13 +637,26 @@ const Reports: React.FC = () => {
         </Card>
       </div>
 
-      {/* ===== Card 3: Chats by Status (Pie) — current MONTH-to-date ===== */}
+      {/* ===== Card 3: Chats by Status (Pie) — selected MONTH ===== */}
       <div className="w-full max-w-7xl">
         <Card className="bg-white border rounded-xl">
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle className="text-base font-semibold">Chats by Status</CardTitle>
-            <div className="text-sm text-gray-600">
-              Scope: {today.toLocaleString("default", { month: "long" })} {today.getFullYear()}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={piePrevMonth}
+                className="inline-flex items-center gap-1 rounded-md border px-2 py-1 text-sm hover:bg-gray-50"
+              >
+                <ChevronLeft className="h-4 w-4" /> Prev
+              </button>
+              <div className="text-sm text-gray-600 whitespace-nowrap">{pieHeaderLabel}</div>
+              <button
+                onClick={pieNextMonth}
+                disabled={pieNextDisabled}
+                className="inline-flex items-center gap-1 rounded-md border px-2 py-1 text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
           </CardHeader>
           <CardContent>
