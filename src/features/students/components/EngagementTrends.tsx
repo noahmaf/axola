@@ -75,7 +75,7 @@ export function EngagementTrends({ studentName }: EngagementTrendsProps) {
 
   const activityBreakdown = [
     { name: "Steps Completed", value: 35, color: "#6366f1" },
-    { name: "Notices Read", value: 18, color: "#10b981" },
+    { name: "Announcements Read", value: 18, color: "#10b981" },
     { name: "Support Chat Messages", value: 37, color: "#f59e0b" },
     { name: "Login Sessions", value: 20, color: "#ec4899" },
   ];
@@ -243,7 +243,7 @@ export function EngagementTrends({ studentName }: EngagementTrendsProps) {
               Weekly Engagement Score
             </CardTitle>
             <CardDescription>
-              Overall engagement with steps, notices and chat
+              Overall engagement with steps, announcements and chat
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -360,7 +360,7 @@ export function EngagementTrends({ studentName }: EngagementTrendsProps) {
             Activity Breakdown
           </CardTitle>
           <CardDescription>
-            Distribution across steps, notices, chat & logins
+            Distribution across steps, announcements, chat & logins
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -436,7 +436,7 @@ export function EngagementTrends({ studentName }: EngagementTrendsProps) {
               <div className="flex justify-between text-sm mb-2">
                 <span className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-blue-500" />
-                  Notices Read
+                  Announcements Read
                 </span>
                 <span className="font-semibold text-blue-600">18/20 (90%)</span>
               </div>
@@ -474,7 +474,7 @@ export function EngagementTrends({ studentName }: EngagementTrendsProps) {
                   Peak activity between 12:00 and 18:00
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Most steps and notices opened in afternoon slots.
+                  Most steps and announcements opened in afternoon slots.
                 </p>
               </div>
             </div>
